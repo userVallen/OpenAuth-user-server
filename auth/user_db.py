@@ -34,7 +34,7 @@ def create_user(username, password):
 
 def verify_user(username, password):
     # Find the user by username
-    user = users_collection.find_one({"username": username})
-    if user and check_password_hash(user["password"], password):
-        return user  # User is valid
+    user_data = users_collection.find_one({"username": username})
+    if user_data and check_password_hash(user_data["password"], password):
+        return user_data  # User is valid
     return None  # Invalid username/password
