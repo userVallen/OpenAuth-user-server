@@ -6,11 +6,12 @@ auth_blueprint = Blueprint('auth', __name__)
 @auth_blueprint.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
+    name = data.get('name')
     username = data.get('username')
     password = data.get('password')
 
     # Call the create_user function to add the user
-    user_data = create_user(username, password)
+    user_data = create_user(name, username, password)
     if user_data is None:
         return jsonify({"message": "User already exists!"}), 400
 
