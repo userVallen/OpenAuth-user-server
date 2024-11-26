@@ -24,7 +24,7 @@ def get_next_sequence(sequence_name):
     )
     return counter["sequence_value"]
 
-def create_user(name, username, password):
+def create_user(name, username, password, role, email):
     # Check if user already exists
     if users_collection.find_one({"username": username}):
         return None  # User already exists
@@ -42,7 +42,8 @@ def create_user(name, username, password):
         "name": name,
         "username": username,
         "password": hashed_password,
-        "role": "",
+        "role": role,
+        "email": email,
         "key": ""
     }
 
@@ -53,10 +54,14 @@ def create_user(name, username, password):
 def verify_user(username, password):
     # Find the user by username
     user_data = users_collection.find_one({"username": username})
+
+    if user_data is None:
+        return {"status": "Not Found"}
     # if user_data and check_password_hash(user_data["password"], password):
     #     return user_data  # User is valid
     # return None  # Invalid username/password
 
     if bcrypt.checkpw(password.encode('utf-8'), user_data["password"]):
-        return user_data
-    return None
+        return {"status": "Success", "user_data": user_data}
+
+    return {"status": "Invalid"}

@@ -9,10 +9,12 @@ def signup():
     name = data.get('name')
     username = data.get('username')
     password = data.get('password')
+    role = data.get('role')
+    email = data.get('email')
 
     # Call the create_user function to add the user
-    user_data = create_user(name, username, password)
-    if user_data is None:
+    status = create_user(name, username, password, role, email)
+    if status is None:
         return jsonify({"message": "User already exists!"}), 400
 
     return jsonify({"message": "User created successfully!"}), 201
@@ -24,8 +26,11 @@ def login():
     password = data.get('password')
 
     # Call the verify_user function to check credentials
-    user_data = verify_user(username, password)
-    if user_data is None:
-        return jsonify({"message": "Invalid username or password"}), 401
+    result = verify_user(username, password)
+    if result['status'] == "Invalid":
+        return jsonify({"message": "Invalid password"}), 401
+
+    if result['status'] == "Not Found":
+        return jsonify({"message": "User not found"}), 404
 
     return jsonify({"message": "Login successful!"}), 200
