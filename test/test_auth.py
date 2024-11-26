@@ -80,6 +80,22 @@ class AuthTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 401)
         self.assertIn('Invalid username or password', response.get_json().get('message'))
 
+    def test_login_invalid_username(self):
+        # Create a user for invalid login test
+        self.client.post('/auth/signup', json={
+            'name': 'Test User',
+            'username': 'testuser',
+            'password': 'testuser123'
+        })
+
+        # Test login with incorrect password
+        response = self.client.post('/auth/login', json={
+            'username': 'wronguser',
+            'password': 'testuser123'
+        })
+        self.assertEqual(response.status_code, 404)
+        self.assertIn('User not found', response.get_json().get('message'))
+
 
 if __name__ == '__main__':
     unittest.main()
