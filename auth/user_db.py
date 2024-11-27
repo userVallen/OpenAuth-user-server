@@ -3,10 +3,11 @@ import os
 from pymongo import MongoClient
 import bcrypt
 
-load_dotenv()  # Loads environment variables from .env
+# Loads environment variables from .env
+load_dotenv()
+mongodb_uri = os.getenv('MONGODB_URI')
 
 # Connect to the user database
-mongodb_uri = os.getenv('MONGODB_URI')
 client = MongoClient(mongodb_uri)
 db = client['auth-db']
 
@@ -57,9 +58,6 @@ def verify_user(username, password):
 
     if user_data is None:
         return {"status": "Not Found"}
-    # if user_data and check_password_hash(user_data["password"], password):
-    #     return user_data  # User is valid
-    # return None  # Invalid username/password
 
     if bcrypt.checkpw(password.encode('utf-8'), user_data["password"]):
         return {"status": "Success", "user_data": user_data}
