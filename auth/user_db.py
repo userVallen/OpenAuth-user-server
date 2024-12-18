@@ -52,13 +52,20 @@ def create_user(name, username, password, role, email):
     users_collection.insert_one(user_data)
     return user_data
 
-def verify_user(username, password):
-    # Find the user by username
+def verify_user(username, password, role):
+    # Verify the username
     user_data = users_collection.find_one({"username": username})
 
     if user_data is None:
         return {"status": "Not Found"}
 
+    # Verify the role
+    user_data = users_collection.find_one({"role": role})
+
+    if user_data is None:
+        return {"status": "Mismatch"}
+
+    # Verify the password
     if bcrypt.checkpw(password.encode('utf-8'), user_data["password"]):
         return {"status": "Success", "user_data": user_data}
 
